@@ -167,7 +167,7 @@ asset_dir = Path(__file__).parent / ".." / "data_folder"
 world_data = np.load(asset_dir / "joint_positions.npy")
 
 world_data = world_data[::5]
-world_data = world_data[:500]
+#world_data = world_data[:100]
 
 smpl_kps = extract_smpl_keypoints(world_data, BVH_JOINT_NAMES, SMPL_JOINT_NAMES, BVH_TO_SMPL)
 

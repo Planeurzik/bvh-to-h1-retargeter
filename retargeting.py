@@ -24,7 +24,7 @@ from retarget_helpers._utils import (
     get_humanoid_retarget_indices,
 )
 
-SAVING_RESULTS = True
+SAVING_RESULTS = False
 
 class RetargetingWeights(TypedDict):
     local_alignment: float
