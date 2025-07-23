@@ -1,4 +1,4 @@
-# Retargeter BVH-to-h1 using Pyroki
+# Retargeter BVH-to-H1 using Pyroki
 
 This repository provides a "homemade" solution to retarget BVH motion data to the H1 robot. While there are many ways it could be improved (such as leveraging the SMPL model for more accurate mapping), it is intended as a lightweight fallback solution — particularly useful when working on imitation learning and in need of a quick, functional retargeting pipeline.
 
