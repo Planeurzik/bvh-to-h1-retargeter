@@ -40,34 +40,11 @@ def main():
 
     # Load source motion data:
     # - keypoints [N, 45, 3],
-    # - left/right foot contact (boolean) 2 x [N],
-    # - heightmap [H, W].
     asset_dir = Path(__file__).parent / "data_folder"
     smpl_keypoints = onp.load(asset_dir / "smpl_keypoints.npy")
-    """ is_left_foot_contact = onp.load(asset_dir / "left_foot_contact.npy")
-    is_right_foot_contact = onp.load(asset_dir / "right_foot_contact.npy") """
-    #heightmap = onp.load(asset_dir / "heightmap.npy")
 
     num_timesteps = smpl_keypoints.shape[0]
     assert smpl_keypoints.shape == (num_timesteps, 45, 3)
-    #assert is_left_foot_contact.shape == (num_timesteps,)
-    #assert is_right_foot_contact.shape == (num_timesteps,)
-
-    """ heightmap = pk.collision.Heightmap(
-        pose=jaxlie.SE3.identity(),
-        size=jnp.array([0.01, 0.01, 1.0]),
-        height_data=heightmap,
-    ) """
-
-    # Get the left and right foot keypoints, projected on the heightmap.
-    """ left_foot_keypoint_idx = SMPL_JOINT_NAMES.index("left_foot")
-    right_foot_keypoint_idx = SMPL_JOINT_NAMES.index("right_foot")
-    left_foot_keypoints = smpl_keypoints[..., left_foot_keypoint_idx, :].reshape(-1, 3)
-    right_foot_keypoints = smpl_keypoints[..., right_foot_keypoint_idx, :].reshape(
-        -1, 3
-    ) """
-    """ left_foot_keypoints = heightmap.project_points(left_foot_keypoints)
-    right_foot_keypoints = heightmap.project_points(right_foot_keypoints) """
 
     smpl_joint_retarget_indices, h1_joint_retarget_indices = (
         get_humanoid_retarget_indices()
@@ -80,7 +57,6 @@ def main():
     playing = server.gui.add_checkbox("playing", True)
     timestep_slider = server.gui.add_slider("timestep", 0, num_timesteps - 1, 1, 0)
     server.scene.add_grid("/ground", width=50, height=50)
-    #server.scene.add_mesh_trimesh("/heightmap", heightmap.to_trimesh())
 
     weights = pk.viewer.WeightTuner(
         server,
