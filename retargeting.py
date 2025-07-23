@@ -24,6 +24,7 @@ from retarget_helpers._utils import (
     get_humanoid_retarget_indices,
 )
 
+SAVING_RESULTS = True
 
 class RetargetingWeights(TypedDict):
     local_alignment: float
@@ -94,6 +95,15 @@ def main():
     joints = joints.at[:, -2].set(0.0)
 
     assert Ts_world_root is not None and joints is not None
+
+    if SAVING_RESULTS:
+        result_to_save = onp.zeros((num_timesteps, 26))
+        result_to_save[:, :3] = Ts_world_root.wxyz_xyz[:, 4:]
+        result_to_save[:, 3:6] = Ts_world_root.wxyz_xyz[:, 1:4]
+        result_to_save[:, 6] = Ts_world_root.wxyz_xyz[:, 0]
+        result_to_save[:, 7:] = joints
+        onp.savetxt(asset_dir / "retargeted_trajectory.csv", result_to_save, delimiter=",")
+        exit(0)
 
     while True:
         with server.atomic():
