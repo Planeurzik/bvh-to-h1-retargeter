@@ -28,4 +28,4 @@ This will create `data_folder/smpl_keypoints.npy`. Now you are ready to start th
 python retargeting.py
 ```
 
-In the `retargeting.py` file, there is a `SAVING_RESULTS` bool that you can turn on if you want to save the results in a .csv file. It is in the format of [LAFAN1 Retargeting Dataset](https://huggingface.co/datasets/lvhaidong/LAFAN1_Retargeting_Dataset).
+In the `retargeting.py` file, there is a `SAVING_RESULTS` bool that you can turn on if you want to save the results in a .csv file. It is in the format of [LAFAN1 Retargeting Dataset](https://huggingface.co/datasets/lvhaidong/LAFAN1_Retargeting_Dataset) (XYZ QXQYQZQW).
