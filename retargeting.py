@@ -102,6 +102,7 @@ def main():
         result_to_save[:, 3:6] = Ts_world_root.wxyz_xyz[:, 1:4]
         result_to_save[:, 6] = Ts_world_root.wxyz_xyz[:, 0]
         result_to_save[:, 7:] = joints
+        print(f"Saved retargeted trajectory")
         onp.savetxt(asset_dir / "retargeted_trajectory.csv", result_to_save, delimiter=",")
         exit(0)
 
@@ -120,7 +121,7 @@ def main():
                 point_size=0.01,
             )
 
-        time.sleep(0.03)
+        time.sleep(0.025)
 
 
 @jdc.jit

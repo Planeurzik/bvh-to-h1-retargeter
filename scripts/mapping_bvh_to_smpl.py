@@ -1,6 +1,8 @@
 import numpy as np
 from pathlib import Path
 
+from scipy.spatial.transform import Rotation as R
+
 SMPL_JOINT_NAMES = [
     "pelvis",
     "left_hip",
@@ -162,6 +164,52 @@ def extract_smpl_keypoints(world_data, bvh_joint_names, smpl_joint_names, bvh_to
 
     return smpl_keypoints
 
+def widen_feet_laterally_orientation_aware(
+    smpl_kps: np.ndarray,
+    pelvis_rot_quat: np.ndarray,
+    delta: float = 0.05,
+) -> np.ndarray:
+    """
+    Push left and right foot/leg keypoints apart laterally in pelvis-local frame.
+
+    Args:
+        smpl_kps: (T, 45, 3) SMPL keypoints in world space.
+        pelvis_rot_quat: (T, 4) quaternion [w, x, y, z] for pelvis orientation.
+        delta: lateral offset per side (meters).
+
+    Returns:
+        smpl_kps_modified: (T, 45, 3) modified keypoints.
+    """
+    T = smpl_kps.shape[0]
+    smpl_kps_modified = smpl_kps.copy()
+
+    LEFT_INDICES = [
+        SMPL_JOINT_NAMES.index(name) for name in [
+            "left_ankle", "left_foot", "left_big_toe", "left_small_toe", "left_heel", "left_knee"
+        ]
+    ]
+    RIGHT_INDICES = [
+        SMPL_JOINT_NAMES.index(name) for name in [
+            "right_ankle", "right_foot", "right_big_toe", "right_small_toe", "right_heel", "right_knee"
+        ]
+    ]
+
+    pelvis_idx = SMPL_JOINT_NAMES.index("pelvis")
+    pelvis_pos = smpl_kps[:, pelvis_idx, :]
+
+    for t in range(T):
+        quat_wxyz = pelvis_rot_quat[t]
+        quat_xyzw = np.roll(quat_wxyz, -1)  # convert wxyz -> xyzw
+        R_world_pelvis = R.from_quat(quat_xyzw).as_matrix()
+        right_vector = R_world_pelvis[:, 1]  # local Y-axis of the pelvis in world frame
+
+        # Apply lateral shift
+        smpl_kps_modified[t, LEFT_INDICES] += delta * right_vector
+        smpl_kps_modified[t, RIGHT_INDICES] -= delta * right_vector
+
+    return smpl_kps_modified
+
+
 asset_dir = Path(__file__).parent / ".." / "data_folder"
 
 world_data = np.load(asset_dir / "joint_positions.npy")
@@ -175,8 +223,12 @@ pelvis_index = 0
 
 pelvis = smpl_kps[:, pelvis_index:pelvis_index+1, :]
 
+pelvis_quats = world_data[:, pelvis_index, 3:7]
+
 scale_factors = np.array([1.0, 1.0, 1.1])
 smpl_scaled = (smpl_kps - pelvis) * scale_factors + pelvis
+
+smpl_scaled = widen_feet_laterally_orientation_aware(smpl_scaled, pelvis_rot_quat = pelvis_quats, delta = 0.1)
 
 print("Scales:", scale_factors)
 
