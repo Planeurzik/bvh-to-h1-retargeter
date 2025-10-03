@@ -29,3 +29,5 @@ python retargeting.py
 ```
 
 In the `retargeting.py` file, there is a `SAVING_RESULTS` bool that you can turn on if you want to save the results in a .csv file. It is in the format of [LAFAN1 Retargeting Dataset](https://huggingface.co/datasets/lvhaidong/LAFAN1_Retargeting_Dataset) (XYZ QXQYQZQW).
+
+The script `clean_process.py` transforms LAFAN1 format dataset into numpy array of observations for H1, the code is mainly from Pierre-Alexandre Leziart.
